@@ -2,7 +2,7 @@
 # 这是一个 Docker 镜像代理服务的配置
 
 # 项目名称，也是 Worker 的默认名称
-name = "cloudflare-docker-proxy"
+name = "docker"
 # Worker 脚本入口文件路径
 main = "src/index.js"
 # 兼容性日期，确保使用的 Cloudflare Workers Runtime API 版本
@@ -33,7 +33,7 @@ TARGET_UPSTREAM = "https://registry-1.docker.io"
 # 生产环境配置
 [env.production]
 # 生产环境的 Worker 名称
-name = "cloudflare-docker-proxy"
+name = "docker"
 # 路由配置 - 将子域名请求路由到这个 Worker
 # 这些路由将不同的子域名映射到这个 Worker
 routes = [
@@ -49,6 +49,8 @@ routes = [
 
 # 生产环境的环境变量
 [env.production.vars]
+# 自定义域名配置
+CUSTOM_DOMAIN = "liucf.com"
 # 运行模式，生产环境设置为 production 模式
 MODE = "production"
 # 目标上游服务器地址，生产环境留空（可能在代码中动态设置）
@@ -57,12 +59,14 @@ TARGET_UPSTREAM = ""
 # 暂存环境配置
 [env.staging]
 # 暂存环境的 Worker 名称
-name = "cloudflare-docker-proxy-staging"
+name = "docker-staging"
 # 暂存环境的路由配置
 route = { pattern = "docker-staging.liucf.com", custom_domain = true }
 
 # 暂存环境的环境变量
 [env.staging.vars]
+# 自定义域名配置
+CUSTOM_DOMAIN = "liucf.com"
 # 运行模式，暂存环境设置为 staging 模式
 MODE = "staging"
 # 目标上游服务器地址，暂存环境留空（可能在代码中动态设置）
