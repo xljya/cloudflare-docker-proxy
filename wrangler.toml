@@ -34,17 +34,16 @@ TARGET_UPSTREAM = "https://registry-1.docker.io"
 [env.production]
 # 生产环境的 Worker 名称
 name = "docker"
-# 路由配置 - 将子域名请求路由到这个 Worker
-# 这些路由将不同的子域名映射到这个 Worker
+# 路由配置 - 支持所有 Docker 镜像仓库代理
 routes = [
-  { pattern = "docker.liucf.com", custom_domain = true },      # Docker Hub 代理
-  { pattern = "quay.liucf.com", custom_domain = true },        # Quay.io 代理
-  { pattern = "gcr.liucf.com", custom_domain = true },         # Google Container Registry 代理
-  { pattern = "k8s-gcr.liucf.com", custom_domain = true },     # Kubernetes GCR 代理
-  { pattern = "k8s.liucf.com", custom_domain = true },         # Kubernetes 镜像代理
-  { pattern = "ghcr.liucf.com", custom_domain = true },        # GitHub Container Registry 代理
-  { pattern = "cloudsmith.liucf.com", custom_domain = true },  # Cloudsmith 代理
-  { pattern = "ecr.liucf.com", custom_domain = true },         # AWS ECR 公共仓库代理
+  { pattern = "docker.liucf.com/*", zone_name = "liucf.com" },      # Docker Hub 代理
+  { pattern = "quay.liucf.com/*", zone_name = "liucf.com" },        # Quay.io 代理
+  { pattern = "gcr.liucf.com/*", zone_name = "liucf.com" },         # Google Container Registry 代理
+  { pattern = "k8s-gcr.liucf.com/*", zone_name = "liucf.com" },     # Kubernetes GCR 代理
+  { pattern = "k8s.liucf.com/*", zone_name = "liucf.com" },         # Kubernetes 镜像代理
+  { pattern = "ghcr.liucf.com/*", zone_name = "liucf.com" },        # GitHub Container Registry 代理
+  { pattern = "cloudsmith.liucf.com/*", zone_name = "liucf.com" },  # Cloudsmith 代理
+  { pattern = "ecr.liucf.com/*", zone_name = "liucf.com" },         # AWS ECR 公共仓库代理
 ]
 
 # 生产环境的环境变量
@@ -61,7 +60,7 @@ TARGET_UPSTREAM = ""
 # 暂存环境的 Worker 名称
 name = "docker-staging"
 # 暂存环境的路由配置
-route = { pattern = "docker-staging.liucf.com", custom_domain = true }
+route = { pattern = "docker-staging.liucf.com/*", zone_name = "liucf.com" }
 
 # 暂存环境的环境变量
 [env.staging.vars]

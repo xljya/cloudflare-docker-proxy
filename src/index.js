@@ -16,21 +16,27 @@ addEventListener("fetch", (event) => {
 // Docker Hub 官方镜像仓库地址
 const dockerHub = "https://registry-1.docker.io";
 
-// 路由映射表：将不同的子域名映射到对应的镜像仓库
-const routes = {
-  // 生产环境路由
-  ["docker." + CUSTOM_DOMAIN]: dockerHub,                        // Docker Hub 代理
-  ["quay." + CUSTOM_DOMAIN]: "https://quay.io",                  // Red Hat Quay.io 代理
-  ["gcr." + CUSTOM_DOMAIN]: "https://gcr.io",                    // Google Container Registry 代理
-  ["k8s-gcr." + CUSTOM_DOMAIN]: "https://k8s.gcr.io",            // Kubernetes GCR 代理
-  ["k8s." + CUSTOM_DOMAIN]: "https://registry.k8s.io",           // Kubernetes 官方镜像仓库代理
-  ["ghcr." + CUSTOM_DOMAIN]: "https://ghcr.io",                  // GitHub Container Registry 代理
-  ["cloudsmith." + CUSTOM_DOMAIN]: "https://docker.cloudsmith.io", // Cloudsmith 代理
-  ["ecr." + CUSTOM_DOMAIN]: "https://public.ecr.aws",            // AWS Elastic Container Registry 公共仓库代理
+/**
+ * 获取路由映射表：将不同的子域名映射到对应的镜像仓库
+ * 动态生成以避免在模块加载时访问未定义的环境变量
+ * @returns {Object} 路由映射表
+ */
+function getRoutes() {
+  return {
+    // 生产环境路由
+    ["docker." + CUSTOM_DOMAIN]: dockerHub,                        // Docker Hub 代理
+    ["quay." + CUSTOM_DOMAIN]: "https://quay.io",                  // Red Hat Quay.io 代理
+    ["gcr." + CUSTOM_DOMAIN]: "https://gcr.io",                    // Google Container Registry 代理
+    ["k8s-gcr." + CUSTOM_DOMAIN]: "https://k8s.gcr.io",            // Kubernetes GCR 代理
+    ["k8s." + CUSTOM_DOMAIN]: "https://registry.k8s.io",           // Kubernetes 官方镜像仓库代理
+    ["ghcr." + CUSTOM_DOMAIN]: "https://ghcr.io",                  // GitHub Container Registry 代理
+    ["cloudsmith." + CUSTOM_DOMAIN]: "https://docker.cloudsmith.io", // Cloudsmith 代理
+    ["ecr." + CUSTOM_DOMAIN]: "https://public.ecr.aws",            // AWS Elastic Container Registry 公共仓库代理
 
-  // 暂存环境路由
-  ["docker-staging." + CUSTOM_DOMAIN]: dockerHub,                // Docker Hub 暂存环境代理
-};
+    // 暂存环境路由
+    ["docker-staging." + CUSTOM_DOMAIN]: dockerHub,                // Docker Hub 暂存环境代理
+  };
+}
 
 /**
  * 根据主机名路由到对应的上游服务器
@@ -38,6 +44,9 @@ const routes = {
  * @returns {string} 对应的上游服务器 URL，如果没有匹配则返回空字符串
  */
 function routeByHosts(host) {
+  // 动态获取路由表
+  const routes = getRoutes();
+  
   // 检查主机名是否在路由表中
   if (host in routes) {
     return routes[host];
@@ -70,7 +79,7 @@ async function handleRequest(request) {
   if (upstream === "") {
     return new Response(
       JSON.stringify({
-        routes: routes,
+        routes: getRoutes(),
       }),
       {
         status: 404,
