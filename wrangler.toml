@@ -1,40 +1,67 @@
+# Cloudflare Workers 项目配置文件
+# 这是一个 Docker 镜像代理服务的配置
+
+# 项目名称，也是 Worker 的默认名称
 name = "cloudflare-docker-proxy"
-main = "src/index.js"
+# 兼容性日期，确保使用的 Cloudflare Workers Runtime API 版本
 compatibility_date = "2023-12-01"
 
+# 开发环境配置
 [dev]
+# 本地开发服务器绑定的 IP 地址，0.0.0.0 表示绑定所有网络接口
 ip = "0.0.0.0"
+# 本地开发服务器监听的端口号
 port = 8787
+# 本地开发服务器使用的协议
 local_protocol = "http"
 
+# 全局环境变量配置（适用于所有环境）
 [env.vars]
-CUSTOM_DOMAIN = "libcuda.so"
+# 自定义域名配置
+CUSTOM_DOMAIN = "liucf.com"
 
+# 开发环境专用的环境变量
 [env.dev.vars]
+# 运行模式，开发环境设置为 debug 模式
 MODE = "debug"
+# 目标上游服务器地址，这里指向 Docker Hub 官方镜像仓库
 TARGET_UPSTREAM = "https://registry-1.docker.io"
-CUSTOM_DOMAIN = "exmaple.com"
+# 开发环境使用全局的 CUSTOM_DOMAIN 配置（liucf.com）
 
+# 生产环境配置
 [env.production]
+# 生产环境的 Worker 名称
 name = "cloudflare-docker-proxy"
-# routes = [
-#   { pattern = "docker.libcuda.so", custom_domain = true },
-#   { pattern = "quay.libcuda.so", custom_domain = true },
-#   { pattern = "gcr.libcuda.so", custom_domain = true },
-#   { pattern = "k8s-gcr.libcuda.so", custom_domain = true },
-#   { pattern = "k8s.libcuda.so", custom_domain = true },
-#   { pattern = "ghcr.libcuda.so", custom_domain = true },
-#   { pattern = "cloudsmith.libcuda.so", custom_domain = true },
-# ]
+# 路由配置 - 将子域名请求路由到这个 Worker
+# 这些路由将不同的子域名映射到这个 Worker
+routes = [
+  { pattern = "docker.liucf.com", custom_domain = true },      # Docker Hub 代理
+  { pattern = "quay.liucf.com", custom_domain = true },        # Quay.io 代理
+  { pattern = "gcr.liucf.com", custom_domain = true },         # Google Container Registry 代理
+  { pattern = "k8s-gcr.liucf.com", custom_domain = true },     # Kubernetes GCR 代理
+  { pattern = "k8s.liucf.com", custom_domain = true },         # Kubernetes 镜像代理
+  { pattern = "ghcr.liucf.com", custom_domain = true },        # GitHub Container Registry 代理
+  { pattern = "cloudsmith.liucf.com", custom_domain = true },  # Cloudsmith 代理
+  { pattern = "ecr.liucf.com", custom_domain = true },         # AWS ECR 公共仓库代理
+]
 
+# 生产环境的环境变量
 [env.production.vars]
+# 运行模式，生产环境设置为 production 模式
 MODE = "production"
+# 目标上游服务器地址，生产环境留空（可能在代码中动态设置）
 TARGET_UPSTREAM = ""
 
+# 暂存环境配置
 [env.staging]
+# 暂存环境的 Worker 名称
 name = "cloudflare-docker-proxy-staging"
-# route = { pattern = "docker-staging.libcuda.so", custom_domain = true }
+# 暂存环境的路由配置
+route = { pattern = "docker-staging.liucf.com", custom_domain = true }
 
+# 暂存环境的环境变量
 [env.staging.vars]
+# 运行模式，暂存环境设置为 staging 模式
 MODE = "staging"
+# 目标上游服务器地址，暂存环境留空（可能在代码中动态设置）
 TARGET_UPSTREAM = ""
