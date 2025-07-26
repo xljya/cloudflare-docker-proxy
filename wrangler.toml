@@ -3,6 +3,8 @@
 
 # 项目名称，也是 Worker 的默认名称
 name = "cloudflare-docker-proxy"
+# Worker 脚本入口文件路径
+main = "src/index.js"
 # 兼容性日期，确保使用的 Cloudflare Workers Runtime API 版本
 compatibility_date = "2023-12-01"
 
